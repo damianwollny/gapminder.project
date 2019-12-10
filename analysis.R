@@ -37,15 +37,34 @@ tapply(gapminder$gdp, list(gapminder$continent,gapminder$year), sum) # cool! gen
 # base R graphics
 
 # ggplot2
-pdf("/Users/damian_wollny/Desktop/gapminder.project/data/figure1.pdf", height = 5, width = 7)
+pdf("/Users/damian_wollny/Desktop/gapminder.project/results/figure1.pdf", height = 5, width = 7)
 ggplot(data = gapminder, mapping = aes(x = gdpPercap, y = lifeExp)) +
   geom_point(pch = 21, size = 2) +
   scale_x_continuous(trans = "log10") +
   geom_smooth(method = "lm")
 dev.off()
 
-ggplot(data = gapminder, mapping = aes(x = year, y = lifeExp, by = country, color = continent)) +
-  geom_line() 
+fig2 <- ggplot(data = gapminder %>% filter(continent == "Americas"), aes(x = year, y = lifeExp, by = country)) +
+  geom_line() +
+  facet_wrap(.~country)
+ggsave(filename = "/Users/damian_wollny/Desktop/gapminder.project/results/figure2.pdf", plot = fig2, width = 12, height = 7, units = "in")
   
   
+ggplot(data = gapminder, aes(x = continent, y = lifeExp, fill = continent)) +
+  geom_boxplot() +
+  facet_wrap(~year)
+
+ggplot(data = gapminder, aes(x = lifeExp, y = pop, color = continent)) +
+  geom_point() 
+
+gapminder %>% filter(continent == "Africa") %>% select(lifeExp, country, year)
+
+# use pipe dplyr output into ggplot 
+gapminder %>% mutate(starts_with = substr(country, 1,1)) %>% 
+  filter(starts_with %in% c("A","Z")) %>% 
+  ggplot(aes(x = year, y= lifeExp, color = continent)) +
+  geom_line() +
+  facet_wrap(.~country)
+
+gapminder %>% filter(year == 2002) %>% group_by(continent) %>% sample_n(2) %>% summarise(aveLE = mean(lifeExp)) %>% arrange(desc(continent))
 
