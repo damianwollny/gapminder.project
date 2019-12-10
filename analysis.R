@@ -4,4 +4,4 @@
 
 # a
 
-# one should never say fuck you in a script
+# this fixes the last comment which was an error
